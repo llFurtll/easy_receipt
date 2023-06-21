@@ -32,6 +32,8 @@ dependencies:
     sdk: flutter
   screen_manager: ^1.1.0
   decimal: ^2.3.2
+  sqflite: ^2.2.8+4
+  path: ^1.8.3
 
 
   # The following adds the Cupertino Icons font to your application.
