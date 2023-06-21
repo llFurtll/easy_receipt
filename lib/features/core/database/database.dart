@@ -3,15 +3,15 @@ import 'package:sqflite/sqflite.dart';
 
 import 'database_create.dart';
 
-abstract class DatabaseInfo<T> {
-  Future<void> initDatabase();
-  Future<T> getDatabase();
+abstract class DatabaseInfo {
+  Future<Database> get database;
 }
 
-class DatabaseInfoImpl extends DatabaseInfo<Database> {
-  @override
-  Future<void> initDatabase() async {
-    await openDatabase(
+class DatabaseInfoImpl extends DatabaseInfo {
+  Database? _database;
+
+  Future<void> _initDatabase() async {
+    _database = await openDatabase(
       join(await getDatabasesPath(), "recibo.db"),
       version: 1,
       onCreate: (db, version) => create(db),
@@ -19,7 +19,11 @@ class DatabaseInfoImpl extends DatabaseInfo<Database> {
   }
 
   @override
-  Future<Database> getDatabase() async {
-    return await openDatabase(join(await getDatabasesPath(), "recibo.db"));
+  Future<Database> get database async {
+    if (_database == null) {
+      await _initDatabase();
+    }
+    
+    return _database!;
   }
 }
