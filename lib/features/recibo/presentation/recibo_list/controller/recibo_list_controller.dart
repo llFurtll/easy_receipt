@@ -18,4 +18,8 @@ class ReciboListController extends ScreenController {
   void _setLoading(bool isLoading) {
     this.isLoading.value = isLoading;
   }
+
+  void newRecibo() {
+    Navigator.of(context).pushNamed("/recibo");
+  }
 }

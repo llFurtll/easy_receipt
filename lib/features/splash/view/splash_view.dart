@@ -3,6 +3,7 @@ import 'package:screen_manager/screen_controller.dart';
 import 'package:screen_manager/screen_injection.dart';
 import 'package:screen_manager/screen_view.dart';
 
+import '../../core/ui/cores.dart';
 import '../controller/splash_controller.dart';
 import '../injection/splash_injection.dart';
 
@@ -27,7 +28,7 @@ class SplashView extends ScreenView<SplashController> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Theme.of(context).primaryColor,
+      backgroundColor: Cores.primary,
       body: Center(
         child: Image.asset(
           "lib/assets/logo.png",

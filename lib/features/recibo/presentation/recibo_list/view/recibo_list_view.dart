@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:screen_manager/screen_view.dart';
 
+import '../../../../core/ui/cores.dart';
 import '../controller/recibo_list_controller.dart';
 import '../injection/recibo_list_injection.dart';
 
@@ -23,6 +24,7 @@ class ReciboListView extends ScreenView<ReciboListController> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: Cores.scaffold,
       appBar: _buildAppBar(context),
       body: _buildBody(),
       floatingActionButton: _buildFab(),
@@ -32,9 +34,14 @@ class ReciboListView extends ScreenView<ReciboListController> {
   AppBar _buildAppBar(BuildContext context) {
     return AppBar(
       elevation: 10.0,
-      backgroundColor: Theme.of(context).primaryColor,
+      backgroundColor: Cores.appBar,
       toolbarHeight: 130.0,
-      title: const Text("Recibos"),
+      title: const Text(
+        "Recibos",
+        style: TextStyle(
+          color: Colors.white
+        ),
+      ),
       titleTextStyle: const TextStyle(
         fontWeight: FontWeight.bold,
         fontSize: 35.0
@@ -69,12 +76,12 @@ class ReciboListView extends ScreenView<ReciboListController> {
         final sizeList = lista.length;
 
         if (sizeList == 0) {
-          return Center(
+          return const Center(
             child: Text(
               "Você não possuí nenhum recibo!",
               style: TextStyle(
                 fontWeight: FontWeight.bold,
-                color: Colors.grey.shade400,
+                color: Cores.text,
                 fontSize: 35.0
               ),
               textAlign: TextAlign.center,
@@ -94,7 +101,8 @@ class ReciboListView extends ScreenView<ReciboListController> {
 
   Widget _buildFab() {
     return FloatingActionButton(
-      onPressed: () {},
+      backgroundColor: Cores.fab,
+      onPressed: controller.newRecibo,
       child: const Icon(Icons.add),
     );
   }
