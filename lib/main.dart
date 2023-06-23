@@ -9,7 +9,7 @@ import 'features/splash/view/splash_view.dart';
 void main() {
   runApp(
     DevicePreview(
-      enabled: !kReleaseMode,
+      enabled: false,
       builder: (context) {
         return MaterialApp(
           // ignore: deprecated_member_use
