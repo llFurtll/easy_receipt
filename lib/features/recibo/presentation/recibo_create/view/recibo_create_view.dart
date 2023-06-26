@@ -27,14 +27,18 @@ class ReciboCreateView extends ScreenView<ReciboCreateController> {
       backgroundColor: Cores.scaffold,
       extendBodyBehindAppBar: true,
       body: SafeArea(
-        child: Padding(
+        child: SingleChildScrollView(
           padding: const EdgeInsets.all(15.0),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               _primeiraSecao(context),
               const SizedBox(height: 5.0),
-              _segundaSecao()
+              _segundaSecao(),
+              const SizedBox(height: 10.0),
+              _terceiraSecao(),
+              const SizedBox(height: 5.0),
+              _quartaSecao()
             ],
           ),
         )
@@ -65,16 +69,88 @@ class ReciboCreateView extends ScreenView<ReciboCreateController> {
       child: Column(
         children: [
           _inputText("Recebi(emos) de"),
+          const SizedBox(height: 15.0),
           _inputText("Endereço"),
+          const SizedBox(height: 15.0),
           _inputText("A importância de"),
+          const SizedBox(height: 15.0),
           _inputText("Referente"),
         ],
       )
     );
   }
 
+  Widget _terceiraSecao() {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        const Text(
+          "E para maior clareza firmo(amos) o presente.",
+          style: TextStyle(
+            color: Cores.title,
+            fontWeight: FontWeight.bold
+          ),
+        ),
+        const SizedBox(height: 5.0),
+        _container(
+          child: Column(
+            children: [
+              const SizedBox(height: 15.0),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                crossAxisAlignment: CrossAxisAlignment.end,
+                children: [
+                  _inputUnderlineBorder(
+                    flex: 3
+                  ),
+                  const Text(","),
+                  _inputUnderlineBorder(width: 10.0, flex: 1),
+                  const SizedBox(width: 10.0),
+                  const Text("de"),
+                  _inputUnderlineBorder(
+                    flex: 3,
+                  ),
+                  const Text("de"),
+                  _inputUnderlineBorder(
+                    flex: 3,
+                    width: 10.0
+                  ),
+                ],
+              ),
+              const SizedBox(height: 15.0)
+            ],
+          )
+        ),
+      ],
+    );
+  }
+
+  Widget _quartaSecao() {
+    return _container(
+      child: Column(
+        children: [
+          Row(
+            children: [
+              Expanded(
+                flex: 7,
+                child: _inputText("Emitente")
+              ),
+              Expanded(
+                flex: 5,
+                child:_inputText("CPF/RG/CNPJ")
+              )
+            ],
+          ),
+          const SizedBox(height: 15.0),
+          _inputText("Endereço"),
+        ]
+      )
+    );
+  }
+
   Widget _inputText(String name) {
     return Row(
+      crossAxisAlignment: CrossAxisAlignment.end,
       children: [
         Text(
           name,
@@ -83,12 +159,29 @@ class ReciboCreateView extends ScreenView<ReciboCreateController> {
         const SizedBox(width: 5.0),
         Expanded(
           child: TextFormField(
+            maxLines: null,
             decoration: const InputDecoration(
+              isDense: true,
+              contentPadding: EdgeInsets.zero,
               border: UnderlineInputBorder()
             ),
           ),
         )
       ],
+    );
+  }
+
+  Widget _inputUnderlineBorder({double? width, int flex = 1}) {
+    return Expanded(
+      flex: flex,
+      child: TextFormField(
+        textAlign: TextAlign.center,
+        decoration: const InputDecoration(
+          isDense: true,
+          contentPadding: EdgeInsets.zero,
+          border: UnderlineInputBorder(),
+        ),
+      ),
     );
   }
 
