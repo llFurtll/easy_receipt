@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:screen_manager/screen_view.dart';
 
 import '../../../../core/ui/cores.dart';
@@ -49,7 +50,7 @@ class ReciboCreateView extends ScreenView<ReciboCreateController> {
   Widget _primeiraSecao(BuildContext context) {
     return Row(
       children: [
-        _input("N°"),
+        _input(name: "N°"),
         const SizedBox(width: 25.0),
         const Text(
           "RECIBO",
@@ -59,7 +60,7 @@ class ReciboCreateView extends ScreenView<ReciboCreateController> {
           ),
         ),
         const SizedBox(width: 25.0),
-        _input("Valor"),
+        _input(name: "Valor", textInputType: TextInputType.number),
       ],
     );
   }
@@ -68,13 +69,13 @@ class ReciboCreateView extends ScreenView<ReciboCreateController> {
     return _container(
       child: Column(
         children: [
-          _inputText("Recebi(emos) de"),
+          _inputText(name: "Recebi(emos) de"),
           const SizedBox(height: 15.0),
-          _inputText("Endereço"),
+          _inputText(name: "Endereço"),
           const SizedBox(height: 15.0),
-          _inputText("A importância de"),
+          _inputText(name: "A importância de"),
           const SizedBox(height: 15.0),
-          _inputText("Referente"),
+          _inputText(name: "Referente"),
         ],
       )
     );
@@ -104,7 +105,10 @@ class ReciboCreateView extends ScreenView<ReciboCreateController> {
                     flex: 3
                   ),
                   const Text(","),
-                  _inputUnderlineBorder(width: 10.0, flex: 1),
+                  _inputUnderlineBorder(
+                    flex: 1,
+                    textInputType: TextInputType.number
+                  ),
                   const SizedBox(width: 10.0),
                   const Text("de"),
                   _inputUnderlineBorder(
@@ -113,7 +117,7 @@ class ReciboCreateView extends ScreenView<ReciboCreateController> {
                   const Text("de"),
                   _inputUnderlineBorder(
                     flex: 3,
-                    width: 10.0
+                    textInputType: TextInputType.number
                   ),
                 ],
               ),
@@ -133,22 +137,25 @@ class ReciboCreateView extends ScreenView<ReciboCreateController> {
             children: [
               Expanded(
                 flex: 7,
-                child: _inputText("Emitente")
+                child: _inputText(name: "Emitente")
               ),
               Expanded(
                 flex: 5,
-                child:_inputText("CPF/RG/CNPJ")
+                child:_inputText(name: "CPF/RG/CNPJ", textInputType: TextInputType.number)
               )
             ],
           ),
           const SizedBox(height: 15.0),
-          _inputText("Endereço"),
+          _inputText(name: "Endereço"),
         ]
       )
     );
   }
 
-  Widget _inputText(String name) {
+  Widget _inputText({
+    required String name,
+    TextInputType? textInputType
+  }) {
     return Row(
       crossAxisAlignment: CrossAxisAlignment.end,
       children: [
@@ -165,13 +172,17 @@ class ReciboCreateView extends ScreenView<ReciboCreateController> {
               contentPadding: EdgeInsets.zero,
               border: UnderlineInputBorder()
             ),
+            keyboardType: textInputType,
           ),
         )
       ],
     );
   }
 
-  Widget _inputUnderlineBorder({double? width, int flex = 1}) {
+  Widget _inputUnderlineBorder({
+    int flex = 1,
+    TextInputType? textInputType
+  }) {
     return Expanded(
       flex: flex,
       child: TextFormField(
@@ -181,11 +192,15 @@ class ReciboCreateView extends ScreenView<ReciboCreateController> {
           contentPadding: EdgeInsets.zero,
           border: UnderlineInputBorder(),
         ),
+        keyboardType: textInputType,
       ),
     );
   }
 
-  Widget _input(String name) {
+  Widget _input({
+    required String name,
+    TextInputType? textInputType
+  }) {
     return Expanded(
       child: _container(
         child: Row(
@@ -198,6 +213,7 @@ class ReciboCreateView extends ScreenView<ReciboCreateController> {
                 decoration: const InputDecoration(
                   border: InputBorder.none
                 ),
+                keyboardType: textInputType,
               ),
             )
           ],
