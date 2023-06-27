@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:screen_manager/screen_view.dart';
 
 import '../../../../core/ui/cores.dart';
@@ -39,7 +38,9 @@ class ReciboCreateView extends ScreenView<ReciboCreateController> {
               const SizedBox(height: 10.0),
               _terceiraSecao(),
               const SizedBox(height: 5.0),
-              _quartaSecao()
+              _quartaSecao(),
+              const SizedBox(height: 10.0),
+              _quintaSecao(context)
             ],
           ),
         )
@@ -152,6 +153,58 @@ class ReciboCreateView extends ScreenView<ReciboCreateController> {
     );
   }
 
+  Widget _quintaSecao(BuildContext context) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        const Text(
+          "Assinatura",
+          style: TextStyle(
+            color: Colors.black,
+            fontWeight: FontWeight.bold
+          )
+        ),
+        const SizedBox(height: 5.0),
+        _container(
+          isPading: false,
+          child: SizedBox(
+            width: MediaQuery.of(context).size.width * 0.5,
+            height: MediaQuery.of(context).size.height * 0.5,
+            child: InkWell(
+              onTap: () => controller.gerarAssinatura(context),
+              child: ValueListenableBuilder(
+                valueListenable: controller.assinatura,
+                builder: (_ ,value, ___) {
+                  if (!controller.assinado) {
+                    return Ink(
+                      width: double.infinity,
+                      height: double.infinity,
+                      child: const Center(
+                        child: Text(
+                          "Realizar assinatura",
+                          style: TextStyle(
+                            color: Cores.text,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        )
+                      ),
+                    );
+                  }
+
+                  return ClipRRect(
+                    borderRadius: BorderRadius.circular(10.0),
+                    clipBehavior: Clip.antiAlias,
+                    child: Image.memory(value!),
+                  );
+                },
+              ),
+            ),
+          )
+        )
+      ],
+    );
+  }
+
   Widget _inputText({
     required String name,
     TextInputType? textInputType
@@ -222,9 +275,10 @@ class ReciboCreateView extends ScreenView<ReciboCreateController> {
     );
   }
 
-  Widget _container({required Widget child}) {
+  Widget _container({required Widget child, bool isPading = true}) {
     return Container(
-      padding: const EdgeInsets.all(5.0),
+      clipBehavior: Clip.antiAliasWithSaveLayer,
+      padding: isPading ? const EdgeInsets.all(5.0) : null,
       decoration: BoxDecoration(
         border: Border.all(),
         shape: BoxShape.rectangle,
