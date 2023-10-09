@@ -1,22 +1,41 @@
+import 'dart:ui' as ui;
+
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:screen_manager/screen_controller.dart';
+import 'package:screen_manager/screen_injection.dart';
 import 'package:syncfusion_flutter_signaturepad/signaturepad.dart';
-import 'dart:ui' as ui;
 
 import '../../../../core/ui/cores.dart';
+import '../../../domain/usecases/get_insert_recibo.dart';
+import '../injection/recibo_create_injection.dart';
 
 class ReciboCreateController extends ScreenController {
+  // CONSTRUTOR
+  late final GetInsertRecibo getInsertRecibo;
+
   // KEYS
   final keyPad = GlobalKey<SfSignaturePadState>();
 
   // NOTIFIERS
   final assinatura = ValueNotifier<Uint8List?>(null);
+
+  // CONTROLLERS
+  final controllersTextField = <String, List<TextEditingController>>{
+    "secao1": [ TextEditingController(), TextEditingController() ],
+    "secao2": [ TextEditingController(), TextEditingController(), TextEditingController(), TextEditingController() ],
+    "secao3": [ TextEditingController(), TextEditingController(), TextEditingController(), TextEditingController() ],
+    "secao4": [ TextEditingController(), TextEditingController(), TextEditingController() ]
+  };
+
+  // VARIAVEIS
   bool assinado = false;
 
   @override
   void onInit() {
     super.onInit();
+    getInsertRecibo = ScreenInjection.of<ReciboCreateInjection>(context).getInsertRecibo;
+
     SystemChrome.setPreferredOrientations([
       DeviceOrientation.landscapeLeft
     ]);
@@ -99,5 +118,62 @@ class ReciboCreateController extends ScreenController {
         ],
       )
     );
+  }
+
+  void salvar() {
+    final message = validForm();
+    if (message.isNotEmpty) {
+      showDialog(
+        context: context,
+        useSafeArea: true,
+        builder: (_) {
+          return AlertDialog(
+            title: const Text("Atenção", textAlign: TextAlign.center),
+            content: Text(
+              message,
+              textAlign: TextAlign.justify,
+            ),
+            contentTextStyle: const TextStyle(
+              fontSize: 18.0,
+              color: Colors.black
+            ),
+            actions: [
+              TextButton(
+                onPressed: () => Navigator.pop(context),
+                child: const Text("OK"),
+              )
+            ],
+            actionsAlignment: MainAxisAlignment.center,
+          );
+        }
+      );
+
+      return;
+    }
+  }
+
+  String validForm() {
+    for (String secao in ["secao1", "secao2", "secao3", "secao4"]) {
+      for (TextEditingController edit in controllersTextField[secao] ?? []) {
+        if (edit.text.isEmpty) {
+          return "Preencha todos os campos do recibo!";
+        }
+      }
+    }
+
+    final assinaturaOk = validAssinatura();
+    if (assinaturaOk.isNotEmpty) {
+      return assinaturaOk;
+    }
+
+    return "";
+  }
+
+  String validAssinatura() {
+    if (!assinado) {
+      return "Realize a assinatura antes de salvar o recibo!";
+    }
+
+    return "";
   }
 }

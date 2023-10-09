@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:screen_manager/screen_controller.dart';
 
 class ReciboListController extends ScreenController {
@@ -20,6 +21,10 @@ class ReciboListController extends ScreenController {
   }
 
   void newRecibo() {
-    Navigator.of(context).pushNamed("/recibo");
+    Navigator.of(context).pushNamed("/recibo").then((_) {
+      SystemChrome.setPreferredOrientations([
+        DeviceOrientation.portraitUp
+      ]);
+    });
   }
 }

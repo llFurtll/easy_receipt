@@ -11,6 +11,7 @@ class ReciboCreateScreen extends Screen {
   @override
   ReciboCreateInjection build(BuildContext context) {
     return ReciboCreateInjection(
+      context: context,
       child: const ScreenBridge<ReciboCreateController, ReciboCreateInjection>(
         child: ReciboCreateView(),
       ),
@@ -42,16 +43,17 @@ class ReciboCreateView extends ScreenView<ReciboCreateController> {
               const SizedBox(height: 10.0),
               _quintaSecao(context)
             ],
-          ),
+          )
         )
       ),
+      floatingActionButton: _buildFab(),
     );
   }
 
   Widget _primeiraSecao(BuildContext context) {
     return Row(
       children: [
-        _input(name: "N°"),
+        _input(name: "N°", secao: "secao1", posicao: 0),
         const SizedBox(width: 25.0),
         const Text(
           "RECIBO",
@@ -61,7 +63,7 @@ class ReciboCreateView extends ScreenView<ReciboCreateController> {
           ),
         ),
         const SizedBox(width: 25.0),
-        _input(name: "Valor", textInputType: TextInputType.number),
+        _input(name: "Valor", secao: "secao1", posicao:  1, textInputType: TextInputType.number),
       ],
     );
   }
@@ -70,13 +72,13 @@ class ReciboCreateView extends ScreenView<ReciboCreateController> {
     return _container(
       child: Column(
         children: [
-          _inputText(name: "Recebi(emos) de"),
+          _inputText(name: "Recebi(emos) de", secao: "secao2", posicao: 0),
           const SizedBox(height: 15.0),
-          _inputText(name: "Endereço"),
+          _inputText(name: "Endereço", secao: "secao2", posicao: 1),
           const SizedBox(height: 15.0),
-          _inputText(name: "A importância de"),
+          _inputText(name: "A importância de", secao: "secao2", posicao: 2),
           const SizedBox(height: 15.0),
-          _inputText(name: "Referente"),
+          _inputText(name: "Referente", secao: "secao2", posicao: 3),
         ],
       )
     );
@@ -103,20 +105,28 @@ class ReciboCreateView extends ScreenView<ReciboCreateController> {
                 crossAxisAlignment: CrossAxisAlignment.end,
                 children: [
                   _inputUnderlineBorder(
+                    secao: "secao3",
+                    posicao: 0,
                     flex: 3
                   ),
                   const Text(","),
                   _inputUnderlineBorder(
+                    secao: "secao3",
+                    posicao: 1,
                     flex: 1,
                     textInputType: TextInputType.number
                   ),
                   const SizedBox(width: 10.0),
                   const Text("de"),
                   _inputUnderlineBorder(
+                    secao: "secao3",
+                    posicao: 2,
                     flex: 3,
                   ),
                   const Text("de"),
                   _inputUnderlineBorder(
+                    secao: "secao3",
+                    posicao: 3,
                     flex: 3,
                     textInputType: TextInputType.number
                   ),
@@ -138,16 +148,16 @@ class ReciboCreateView extends ScreenView<ReciboCreateController> {
             children: [
               Expanded(
                 flex: 7,
-                child: _inputText(name: "Emitente")
+                child: _inputText(name: "Emitente", secao: "secao4", posicao: 0)
               ),
               Expanded(
                 flex: 5,
-                child:_inputText(name: "CPF/RG/CNPJ", textInputType: TextInputType.number)
+                child:_inputText(name: "CPF/RG/CNPJ", secao: "secao4", posicao: 1, textInputType: TextInputType.number)
               )
             ],
           ),
           const SizedBox(height: 15.0),
-          _inputText(name: "Endereço"),
+          _inputText(name: "Endereço", secao: "secao4", posicao: 2),
         ]
       )
     );
@@ -207,6 +217,8 @@ class ReciboCreateView extends ScreenView<ReciboCreateController> {
 
   Widget _inputText({
     required String name,
+    required String secao,
+    required int posicao,
     TextInputType? textInputType
   }) {
     return Row(
@@ -219,13 +231,14 @@ class ReciboCreateView extends ScreenView<ReciboCreateController> {
         const SizedBox(width: 5.0),
         Expanded(
           child: TextFormField(
+            controller: controller.controllersTextField[secao]?[posicao],
             maxLines: null,
             decoration: const InputDecoration(
               isDense: true,
               contentPadding: EdgeInsets.zero,
               border: UnderlineInputBorder()
             ),
-            keyboardType: textInputType,
+            keyboardType: textInputType
           ),
         )
       ],
@@ -233,12 +246,15 @@ class ReciboCreateView extends ScreenView<ReciboCreateController> {
   }
 
   Widget _inputUnderlineBorder({
+    required String secao,
+    required int posicao,
     int flex = 1,
     TextInputType? textInputType
   }) {
     return Expanded(
       flex: flex,
       child: TextFormField(
+        controller: controller.controllersTextField[secao]?[posicao],
         textAlign: TextAlign.center,
         decoration: const InputDecoration(
           isDense: true,
@@ -252,7 +268,9 @@ class ReciboCreateView extends ScreenView<ReciboCreateController> {
 
   Widget _input({
     required String name,
-    TextInputType? textInputType
+    required String secao,
+    required int posicao,
+    TextInputType? textInputType,
   }) {
     return Expanded(
       child: _container(
@@ -262,11 +280,12 @@ class ReciboCreateView extends ScreenView<ReciboCreateController> {
             const SizedBox(width: 25.0),
             Expanded(
               child: TextFormField(
+                controller: controller.controllersTextField[secao]?[posicao],
                 textAlign: TextAlign.center,
                 decoration: const InputDecoration(
                   border: InputBorder.none
                 ),
-                keyboardType: textInputType,
+                keyboardType: textInputType
               ),
             )
           ],
@@ -285,6 +304,14 @@ class ReciboCreateView extends ScreenView<ReciboCreateController> {
         borderRadius: BorderRadius.circular(10.0)
       ),
       child: child
+    );
+  }
+
+  Widget _buildFab() {
+    return FloatingActionButton(
+      backgroundColor: Cores.fab,
+      onPressed: controller.salvar,
+      child: const Icon(Icons.add),
     );
   }
 }
