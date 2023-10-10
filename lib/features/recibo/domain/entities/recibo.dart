@@ -1,15 +1,15 @@
-import 'package:decimal/decimal.dart';
-
 class Recibo {
   int? id;
   final int? numero;
-  final Decimal? valor;
+  final String? valor;
   final String? nomePagador;
   final String? enderecoPagador;
-  final Decimal? valorPagador;
+  final String? valorPagador;
   final String? referente;
   final String? cidadeUf;
-  final String? data;
+  final String? dia;
+  final String? mes;
+  final String? ano;
   final String? nomeEmitente;
   final String? cpfRgCnpjEmitente;
   final String? enderecoEmitente;
@@ -24,7 +24,9 @@ class Recibo {
     required this.valorPagador,
     required this.referente,
     required this.cidadeUf,
-    required this.data,
+    required this.dia,
+    required this.mes,
+    required this.ano,
     required this.nomeEmitente,
     required this.cpfRgCnpjEmitente,
     required this.enderecoEmitente,

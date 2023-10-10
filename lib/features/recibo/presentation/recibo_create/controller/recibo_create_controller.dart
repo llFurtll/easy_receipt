@@ -7,6 +7,7 @@ import 'package:screen_manager/screen_injection.dart';
 import 'package:syncfusion_flutter_signaturepad/signaturepad.dart';
 
 import '../../../../core/ui/cores.dart';
+import '../../../domain/entities/recibo.dart';
 import '../../../domain/usecases/get_insert_recibo.dart';
 import '../injection/recibo_create_injection.dart';
 
@@ -16,20 +17,14 @@ class ReciboCreateController extends ScreenController {
 
   // KEYS
   final keyPad = GlobalKey<SfSignaturePadState>();
+  final keyForm = GlobalKey<FormState>();
 
   // NOTIFIERS
   final assinatura = ValueNotifier<Uint8List?>(null);
 
-  // CONTROLLERS
-  final controllersTextField = <String, List<TextEditingController>>{
-    "secao1": [ TextEditingController(), TextEditingController() ],
-    "secao2": [ TextEditingController(), TextEditingController(), TextEditingController(), TextEditingController() ],
-    "secao3": [ TextEditingController(), TextEditingController(), TextEditingController(), TextEditingController() ],
-    "secao4": [ TextEditingController(), TextEditingController(), TextEditingController() ]
-  };
-
   // VARIAVEIS
   bool assinado = false;
+  FormRecibo formRecibo = FormRecibo();
 
   @override
   void onInit() {
@@ -153,12 +148,10 @@ class ReciboCreateController extends ScreenController {
   }
 
   String validForm() {
-    for (String secao in ["secao1", "secao2", "secao3", "secao4"]) {
-      for (TextEditingController edit in controllersTextField[secao] ?? []) {
-        if (edit.text.isEmpty) {
-          return "Preencha todos os campos do recibo!";
-        }
-      }
+    keyForm.currentState?.save();
+
+    if (!formRecibo.isValid()) {
+      return "Preencha todos os campos do recibo!";
     }
 
     final assinaturaOk = validAssinatura();
@@ -175,5 +168,76 @@ class ReciboCreateController extends ScreenController {
     }
 
     return "";
+  }
+}
+
+class FormRecibo {
+  int? numero;
+  String? valor;
+  String? nomePagador;
+  String? enderecoPagador;
+  String? valorPagador;
+  String? referente;
+  String? cidadeUf;
+  String? dia;
+  String? mes;
+  String? ano;
+  String? nomeEmitente;
+  String? cpfRgCnpjEmitente;
+  String? enderecoEmitente;
+  String? assinatura;
+
+  FormRecibo({
+    numero,
+    valor,
+    nomePagador,
+    enderecoPagador,
+    valorPagador,
+    referente,
+    cidadeUf,
+    dia,
+    mes,
+    ano,
+    nomeEmitente,
+    cpfRgCnpjEmitente,
+    enderecoEmitente,
+    assinatura
+  });
+
+  factory FormRecibo.fromEntity(Recibo recibo) {
+    return FormRecibo(
+      numero: recibo.numero,
+      valor: recibo.valor,
+      nomePagador: recibo.nomePagador,
+      enderecoPagador: recibo.enderecoPagador,
+      valorPagador: recibo.valorPagador,
+      referente: recibo.referente,
+      cidadeUf: recibo.cidadeUf,
+      dia: recibo.dia,
+      mes: recibo.mes,
+      ano: recibo.ano,
+      nomeEmitente: recibo.nomeEmitente,
+      cpfRgCnpjEmitente: recibo.cpfRgCnpjEmitente,
+      enderecoEmitente: recibo.enderecoEmitente,
+      assinatura: recibo.assinatura
+    );
+  }
+
+  bool isValid() {
+    return (
+      numero != null &&
+      valor != null &&
+      nomePagador != null &&
+      enderecoPagador != null &&
+      valorPagador != null &&
+      referente != null &&
+      cidadeUf != null &&
+      dia != null &&
+      mes != null &&
+      ano != null &&
+      nomeEmitente != null &&
+      cpfRgCnpjEmitente != null &&
+      enderecoEmitente != null
+    );
   }
 }
