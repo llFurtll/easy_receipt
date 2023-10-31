@@ -63,7 +63,8 @@ class ReciboCreateView extends ScreenView<ReciboCreateController> {
       children: [
         _input(
           name: "N°",
-          onSaved: (value) => controller.formRecibo.numero = int.tryParse(value ?? "")
+          onSaved: (value) => controller.formRecibo.numero = int.tryParse(value ?? ""),
+          initialValue: "${controller.formRecibo.numero ?? ""}"
         ),
         const SizedBox(width: 25.0),
         const Text(
@@ -77,7 +78,8 @@ class ReciboCreateView extends ScreenView<ReciboCreateController> {
         _input(
           name: "Valor",
           onSaved: (value) => controller.formRecibo.valor = value,
-          textInputType: TextInputType.number
+          textInputType: TextInputType.number,
+          initialValue: controller.formRecibo.valor
         ),
       ],
     );
@@ -89,22 +91,26 @@ class ReciboCreateView extends ScreenView<ReciboCreateController> {
         children: [
           _inputText(
             name: "Recebi(emos) de",
-            onSaved: (value) => controller.formRecibo.nomePagador = value
+            onSaved: (value) => controller.formRecibo.nomePagador = value,
+            initialValue: controller.formRecibo.nomePagador
           ),
           const SizedBox(height: 15.0),
           _inputText(
             name: "Endereço",
-            onSaved: (value) => controller.formRecibo.enderecoPagador = value
+            onSaved: (value) => controller.formRecibo.enderecoPagador = value,
+            initialValue: controller.formRecibo.enderecoPagador
           ),
           const SizedBox(height: 15.0),
           _inputText(
             name: "A importância de",
-            onSaved: (value) => controller.formRecibo.valorPagador = value
+            onSaved: (value) => controller.formRecibo.valorPagador = value,
+            initialValue: controller.formRecibo.valorPagador
           ),
           const SizedBox(height: 15.0),
           _inputText(
             name: "Referente",
-            onSaved: (value) => controller.formRecibo.referente = value
+            onSaved: (value) => controller.formRecibo.referente = value,
+            initialValue: controller.formRecibo.referente
           ),
         ],
       )
@@ -133,25 +139,29 @@ class ReciboCreateView extends ScreenView<ReciboCreateController> {
                 children: [
                   _inputUnderlineBorder(
                     flex: 3,
-                    onSaved: (value) => controller.formRecibo.cidadeUf = value
+                    onSaved: (value) => controller.formRecibo.cidadeUf = value,
+                    initialValue: controller.formRecibo.cidadeUf
                   ),
                   const Text(","),
                   _inputUnderlineBorder(
                     flex: 1,
                     textInputType: TextInputType.number,
-                    onSaved: (value) => controller.formRecibo.dia = value
+                    onSaved: (value) => controller.formRecibo.dia = value,
+                    initialValue: controller.formRecibo.dia
                   ),
                   const SizedBox(width: 10.0),
                   const Text("de"),
                   _inputUnderlineBorder(
                     flex: 3,
-                    onSaved: (value) => controller.formRecibo.mes = value
+                    onSaved: (value) => controller.formRecibo.mes = value,
+                    initialValue: controller.formRecibo.mes
                   ),
                   const Text("de"),
                   _inputUnderlineBorder(
                     flex: 3,
                     textInputType: TextInputType.number,
-                    onSaved: (value) => controller.formRecibo.ano = value
+                    onSaved: (value) => controller.formRecibo.ano = value,
+                    initialValue: controller.formRecibo.ano
                   ),
                 ],
               ),
@@ -173,7 +183,8 @@ class ReciboCreateView extends ScreenView<ReciboCreateController> {
                 flex: 7,
                 child: _inputText(
                   name: "Emitente",
-                  onSaved: (value) => controller.formRecibo.nomeEmitente = value
+                  onSaved: (value) => controller.formRecibo.nomeEmitente = value,
+                  initialValue: controller.formRecibo.nomeEmitente
                 )
               ),
               Expanded(
@@ -181,7 +192,8 @@ class ReciboCreateView extends ScreenView<ReciboCreateController> {
                 child: _inputText(
                   name: "CPF/RG/CNPJ",
                   textInputType: TextInputType.number,
-                  onSaved: (value) => controller.formRecibo.cpfRgCnpjEmitente = value
+                  onSaved: (value) => controller.formRecibo.cpfRgCnpjEmitente = value,
+                  initialValue: controller.formRecibo.cpfRgCnpjEmitente
                 )
               )
             ],
@@ -189,7 +201,8 @@ class ReciboCreateView extends ScreenView<ReciboCreateController> {
           const SizedBox(height: 15.0),
           _inputText(
             name: "Endereço",
-            onSaved: (value) => controller.formRecibo.enderecoEmitente = value
+            onSaved: (value) => controller.formRecibo.enderecoEmitente = value,
+            initialValue: controller.formRecibo.enderecoEmitente
           ),
         ]
       )
@@ -251,6 +264,7 @@ class ReciboCreateView extends ScreenView<ReciboCreateController> {
   Widget _inputText({
     required String name,
     required Function(String? value) onSaved,
+    required dynamic initialValue,
     TextInputType? textInputType
   }) {
     return Row(
@@ -263,6 +277,7 @@ class ReciboCreateView extends ScreenView<ReciboCreateController> {
         const SizedBox(width: 5.0),
         Expanded(
           child: TextFormField(
+            initialValue: initialValue,
             maxLines: null,
             decoration: const InputDecoration(
               isDense: true,
@@ -271,6 +286,7 @@ class ReciboCreateView extends ScreenView<ReciboCreateController> {
             ),
             keyboardType: textInputType,
             onSaved: onSaved,
+            enabled: !controller.isEdit.value
           ),
         )
       ],
@@ -279,12 +295,14 @@ class ReciboCreateView extends ScreenView<ReciboCreateController> {
 
   Widget _inputUnderlineBorder({
     required Function(String? value) onSaved,
+    required dynamic initialValue,
     int flex = 1,
     TextInputType? textInputType
   }) {
     return Expanded(
       flex: flex,
       child: TextFormField(
+        initialValue: initialValue,
         textAlign: TextAlign.center,
         decoration: const InputDecoration(
           isDense: true,
@@ -293,6 +311,7 @@ class ReciboCreateView extends ScreenView<ReciboCreateController> {
         ),
         keyboardType: textInputType,
         onSaved: onSaved,
+        enabled: !controller.isEdit.value
       ),
     );
   }
@@ -300,6 +319,7 @@ class ReciboCreateView extends ScreenView<ReciboCreateController> {
   Widget _input({
     required Function(String? value) onSaved,
     required String name,
+    required dynamic initialValue,
     TextInputType? textInputType,
   }) {
     return Expanded(
@@ -310,12 +330,14 @@ class ReciboCreateView extends ScreenView<ReciboCreateController> {
             const SizedBox(width: 25.0),
             Expanded(
               child: TextFormField(
+                initialValue: initialValue,
                 textAlign: TextAlign.center,
                 decoration: const InputDecoration(
                   border: InputBorder.none
                 ),
                 keyboardType: textInputType,
                 onSaved: onSaved,
+                enabled: !controller.isEdit.value
               ),
             )
           ],

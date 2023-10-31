@@ -49,4 +49,12 @@ class ReciboListController extends ScreenController {
       ]);
     });
   }
+
+  void showRecibo(Recibo recibo) {
+    Navigator.of(context).pushNamed("/recibo", arguments: recibo).then((_) {
+      SystemChrome.setPreferredOrientations([
+        DeviceOrientation.portraitUp
+      ]);
+    });
+  }
 }

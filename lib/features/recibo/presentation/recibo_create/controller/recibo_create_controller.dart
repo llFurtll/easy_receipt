@@ -35,6 +35,14 @@ class ReciboCreateController extends ScreenController {
     super.onInit();
     getInsertRecibo = ScreenInjection.of<ReciboCreateInjection>(context).getInsertRecibo;
 
+    final arguments = ModalRoute.of(context)?.settings.arguments;
+    if (arguments != null) {
+      isEdit.value = true;
+      formRecibo = FormRecibo.fromEntity(arguments as Recibo);
+      assinado = true;
+      assinatura.value = File(formRecibo.assinatura!).readAsBytesSync();
+    }
+
     SystemChrome.setPreferredOrientations([
       DeviceOrientation.landscapeLeft
     ]);
@@ -53,7 +61,9 @@ class ReciboCreateController extends ScreenController {
   }
 
   void gerarAssinatura(BuildContext innerContext) {
-    assinado = false;
+    if (isEdit.value) {
+      return;
+    }
 
     showDialog(
       barrierDismissible: false,
@@ -233,20 +243,20 @@ class FormRecibo {
   String? assinatura;
 
   FormRecibo({
-    numero,
-    valor,
-    nomePagador,
-    enderecoPagador,
-    valorPagador,
-    referente,
-    cidadeUf,
-    dia,
-    mes,
-    ano,
-    nomeEmitente,
-    cpfRgCnpjEmitente,
-    enderecoEmitente,
-    assinatura
+    this.numero,
+    this.valor,
+    this.nomePagador,
+    this.enderecoPagador,
+    this.valorPagador,
+    this.referente,
+    this.cidadeUf,
+    this.dia,
+    this.mes,
+    this.ano,
+    this.nomeEmitente,
+    this.cpfRgCnpjEmitente,
+    this.enderecoEmitente,
+    this.assinatura
   });
 
   factory FormRecibo.fromEntity(Recibo recibo) {

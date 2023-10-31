@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:easy_receipt/features/recibo/domain/entities/recibo.dart';
 import 'package:flutter/material.dart';
 import 'package:screen_manager/screen_view.dart';
@@ -109,7 +111,7 @@ class ReciboListView extends ScreenView<ReciboListController> {
 
         return ListView.separated(
           padding: const EdgeInsets.all(5.0),
-          itemBuilder: (context, index) => _buildCard(lista[index]),
+          itemBuilder: (context, index) => _buildCard(lista[index], context),
           separatorBuilder: (context, index) => const SizedBox(height: 15.0,),
           itemCount: sizeList
         );
@@ -125,91 +127,106 @@ class ReciboListView extends ScreenView<ReciboListController> {
     );
   }
 
-  Widget _buildCard(Recibo recibo) {
+  Widget _buildCard(Recibo recibo, BuildContext context) {
     return Card(
       elevation: 10,
-      child: Padding(
-        padding: const EdgeInsets.all(10.0),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
+      child: ExpansionTile(
+        tilePadding: const EdgeInsets.only(left: 10, right: 10),
+        textColor: Colors.black,
+        iconColor: Colors.grey,
+        shape: InputBorder.none,
+        title: Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                _buildTitle("Nº: ", "${recibo.numero}"),
-                _buildTitle("Valor: ", "${recibo.valor}")
-              ],
-            ),
-            _spacer(),
-            Align(
-              alignment: Alignment.center,
-              child: _buildTitle(
-                "Informações do pagador",
-                ""
-              ),
-            ),
-            _spacer(),
-            _buildTitle(
-              "Recebi(emos) de: ",
-              "${recibo.nomePagador}"
-            ),
-            _buildTitle(
-              "Endereço: " ,
-              "${recibo.enderecoPagador}"
-            ),
-            _buildTitle(
-              "A importância de: ",
-              "${recibo.valorPagador}"
-            ),
-            _spacer(),
-            Align(
-              alignment: Alignment.center,
-              child: _buildTitle(
-                "Data do recibo",
-                ""
-              ),
-            ),
-            _spacer(),
-            _buildTitle(
-              "Cidade/Estado: ",
-              "${recibo.cidadeUf}"
-            ),
-            _buildTitle(
-              "Dia: ",
-              "${recibo.dia}"
-            ),
-            _buildTitle(
-              "Mês: ",
-              "${recibo.mes}",
-            ),
-            _buildTitle(
-              "Ano: ",
-              "${recibo.ano}"
-            ),
-            _spacer(),
-            Align(
-              alignment: Alignment.center,
-              child: _buildTitle(
-                "Informações do emitente",
-                ""
-              ),
-            ),
-            _spacer(),
-            _buildTitle(
-              "Emitente: ",
-              "${recibo.nomeEmitente}"
-            ),
-            _buildTitle(
-              "CPF/RG/CNPJ: ",
-              "${recibo.cpfRgCnpjEmitente}"
-            ),
-            _buildTitle(
-              "Endereço: ",
-              "${recibo.enderecoEmitente}"
-            )
+            _buildTitle("Nº: ", "${recibo.numero}"),
+            _buildTitle("Valor: ", "${recibo.valor}")
           ],
         ),
-      ),
+        children: [
+          InkWell(
+            onTap: () => controller.showRecibo(recibo),
+            child: Padding(
+              padding: const EdgeInsets.only(left: 10, right: 10),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Align(
+                    alignment: Alignment.center,
+                    child: _buildTitle(
+                      "Informações do pagador",
+                      ""
+                    ),
+                  ),
+                  _spacer(),
+                  _buildTitle(
+                    "Recebi(emos) de: ",
+                    "${recibo.nomePagador}"
+                  ),
+                  _buildTitle(
+                    "Endereço: " ,
+                    "${recibo.enderecoPagador}"
+                  ),
+                  _buildTitle(
+                    "A importância de: ",
+                    "${recibo.valorPagador}"
+                  ),
+                  _buildTitle(
+                    "Referente: ",
+                    "${recibo.referente}"
+                  ),
+                  _spacer(),
+                  Align(
+                    alignment: Alignment.center,
+                    child: _buildTitle(
+                      "Data/Local do recibo",
+                      ""
+                    ),
+                  ),
+                  _spacer(),
+                  _buildTitle(
+                    "Cidade/Estado: ",
+                    "${recibo.cidadeUf}"
+                  ),
+                  _buildTitle(
+                    "Dia: ",
+                    "${recibo.dia}"
+                  ),
+                  _buildTitle(
+                    "Mês: ",
+                    "${recibo.mes}",
+                  ),
+                  _buildTitle(
+                    "Ano: ",
+                    "${recibo.ano}"
+                  ),
+                  _spacer(),
+                  Align(
+                    alignment: Alignment.center,
+                    child: _buildTitle(
+                      "Informações do emitente",
+                      ""
+                    ),
+                  ),
+                  _spacer(),
+                  _buildTitle(
+                    "Emitente: ",
+                    "${recibo.nomeEmitente}"
+                  ),
+                  _buildTitle(
+                    "CPF/RG/CNPJ: ",
+                    "${recibo.cpfRgCnpjEmitente}"
+                  ),
+                  _buildTitle(
+                    "Endereço: ",
+                    "${recibo.enderecoEmitente}"
+                  ),
+                  _buildAssinatura(context, recibo)
+                ],
+              ),
+            )
+          ),
+        ],
+      )
     );
   }
 
@@ -229,6 +246,30 @@ class ReciboListView extends ScreenView<ReciboListController> {
         ]
       ),
       maxLines: null,
+    );
+  }
+
+  Widget _buildAssinatura(BuildContext context, Recibo recibo) {
+    return Align(
+      alignment: Alignment.center,
+      child: ElevatedButton(
+        style: ElevatedButton.styleFrom(
+          backgroundColor: Cores.primary
+        ),
+        onPressed: () => showAssinatura(context, recibo),
+        child: const Text("Ver assinatura"),
+      ),
+    );
+  }
+
+  void showAssinatura(BuildContext context, Recibo recibo) {
+    showDialog(
+      context: context,
+      builder: (_,) {
+        return AlertDialog(
+          content: Image.file(File(recibo.assinatura!)),
+        );
+      }
     );
   }
 
