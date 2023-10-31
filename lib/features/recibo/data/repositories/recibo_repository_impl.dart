@@ -21,4 +21,14 @@ class ReciboRepositoryImpl extends ReciboRepository {
       return (OperationFailure(message: e.message), null);
     }
   }
+
+  @override
+  Future<(Failure?, List<Recibo>?)> find() async {
+    try {
+      final result = await dataSource.find();
+      return (null, result);
+    } on OperationException catch (e) {
+      return (OperationFailure(message: e.message), null);
+    }
+  }
 }

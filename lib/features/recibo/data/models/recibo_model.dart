@@ -19,6 +19,26 @@ class ReciboModel extends Recibo {
     required super.assinatura
   });
 
+  factory ReciboModel.fromMap(Map item) {
+    return ReciboModel(
+      id: item['ID'],
+      numero: item['NUMERO'],
+      valor: item['VALOR']?.toString(),
+      nomePagador: item['NOME_PAGADOR'],
+      enderecoPagador: item['ENDERECO_PAGADOR'],
+      valorPagador: item['VALOR_PAGADOR'],
+      referente: item['REFERENTE'],
+      cidadeUf: item['CIDADE_UF'],
+      dia: item['DIA'],
+      mes: item['MES'],
+      ano: item['ANO'],
+      nomeEmitente: item['NOME_EMITENTE'],
+      cpfRgCnpjEmitente: item['CPF_RG_CNPJ_EMITENTE'],
+      enderecoEmitente: item['ENDERECO_EMITENTE'],
+      assinatura: item['ASSINATURA']
+    );
+  }
+
   factory ReciboModel.fromEntity(Recibo recibo) {
     return ReciboModel(
       id: recibo.id,
@@ -41,7 +61,6 @@ class ReciboModel extends Recibo {
 
   Map<String, dynamic> toJson() {
     return {
-      "ID": id,
       "NUMERO": numero,
       "VALOR": valor,
       "NOME_PAGADOR": nomePagador,

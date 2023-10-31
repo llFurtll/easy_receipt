@@ -32,20 +32,25 @@ class ReciboCreateView extends ScreenView<ReciboCreateController> {
           padding: const EdgeInsets.all(15.0),
           child: Form(
             key: controller.keyForm,
-              child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                _primeiraSecao(context),
-                const SizedBox(height: 5.0),
-                _segundaSecao(),
-                const SizedBox(height: 10.0),
-                _terceiraSecao(),
-                const SizedBox(height: 5.0),
-                _quartaSecao(),
-                const SizedBox(height: 10.0),
-                _quintaSecao(context)
-              ],
-            ),
+              child: ValueListenableBuilder(
+                valueListenable: controller.isEdit,
+                builder: (_, __, ___) {
+                  return Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      _primeiraSecao(context),
+                      const SizedBox(height: 5.0),
+                      _segundaSecao(),
+                      const SizedBox(height: 10.0),
+                      _terceiraSecao(),
+                      const SizedBox(height: 5.0),
+                      _quartaSecao(),
+                      const SizedBox(height: 10.0),
+                      _quintaSecao(context)
+                    ],
+                  );
+                },
+              )
           )
         )
       ),
@@ -336,7 +341,7 @@ class ReciboCreateView extends ScreenView<ReciboCreateController> {
     return FloatingActionButton(
       backgroundColor: Cores.fab,
       onPressed: controller.salvar,
-      child: const Icon(Icons.add),
+      child: const Icon(Icons.save),
     );
   }
 }

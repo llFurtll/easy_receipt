@@ -15,8 +15,18 @@ class ReciboLocalDataSurceImpl extends ReciboLocalDataSource {
 
   @override
   Future<List<ReciboModel>> find() async {
-    // TODO: implement find
-    throw UnimplementedError();
+    try {
+      final db = await databaseInfo.database;
+      final result = await db.query(table, orderBy: "NUMERO DESC");
+      final response = <ReciboModel>[];
+      for (Map item in result) {
+        response.add(ReciboModel.fromMap(item));
+      }
+
+      return response;
+    } catch (_) {
+      throw const OperationException("erro-operation");
+    }
   }
 
   @override

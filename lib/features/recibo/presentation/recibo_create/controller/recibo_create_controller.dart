@@ -1,10 +1,13 @@
+import 'dart:io';
 import 'dart:ui' as ui;
 
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:path_provider/path_provider.dart';
 import 'package:screen_manager/screen_controller.dart';
 import 'package:screen_manager/screen_injection.dart';
 import 'package:syncfusion_flutter_signaturepad/signaturepad.dart';
+import 'package:uuid/uuid.dart';
 
 import '../../../../core/ui/cores.dart';
 import '../../../domain/entities/recibo.dart';
@@ -21,6 +24,7 @@ class ReciboCreateController extends ScreenController {
 
   // NOTIFIERS
   final assinatura = ValueNotifier<Uint8List?>(null);
+  final isEdit = ValueNotifier<bool>(false);
 
   // VARIAVEIS
   bool assinado = false;
@@ -115,10 +119,77 @@ class ReciboCreateController extends ScreenController {
     );
   }
 
-  void salvar() {
+  void salvar() async {
     final message = validForm();
     if (message.isNotEmpty) {
-      showDialog(
+      showMessage(message);
+      return;
+    }
+
+    final image = await saveAssinatura();
+    final (success, path) = image;
+
+    if (!success) {
+      showMessage("Não foi possível salvar a imagem da assinatura, por favor tente novamente!");
+      return;
+    }
+
+    formRecibo.assinatura = path;
+
+    final result = await getInsertRecibo(InsertReciboParams(recibo: formRecibo.toRecibo()));
+    final (error, _) = result;
+    if (error != null) {
+      showMessage(error.message);
+      return;
+    }
+
+    showMessage("Recibo cadastrado com sucesso!");
+    isEdit.value = true;
+  }
+
+  String validForm()  {
+    keyForm.currentState?.save();
+
+    if (!formRecibo.isValid()) {
+      return "Preencha todos os campos do recibo!";
+    }
+
+    final assinaturaOk = validAssinatura();
+    if (assinaturaOk.isNotEmpty) {
+      return assinaturaOk;
+    }
+
+    return "";
+  }
+
+  String validAssinatura() {
+    if (!assinado) {
+      return "Realize a assinatura antes de salvar o recibo!";
+    }
+
+    return "";
+  }
+
+  Future<(bool, String)> saveAssinatura() async {
+    try {
+      const nameFile = "assinatura.png";
+      final pathDocuments = await getApplicationDocumentsDirectory();
+      final nameFolder = const Uuid().v1();
+
+      File file = File("${pathDocuments.path}/$nameFolder/$nameFile");
+      file.createSync(recursive: true);
+      if (assinatura.value != null) {
+        file.writeAsBytes(assinatura.value!);
+      }
+
+      return (true, file.path);
+    } catch (e) {
+      return (false, "");
+    }
+  }
+
+  void showMessage(String message) {
+    showDialog(
         context: context,
         useSafeArea: true,
         builder: (_) {
@@ -142,32 +213,6 @@ class ReciboCreateController extends ScreenController {
           );
         }
       );
-
-      return;
-    }
-  }
-
-  String validForm() {
-    keyForm.currentState?.save();
-
-    if (!formRecibo.isValid()) {
-      return "Preencha todos os campos do recibo!";
-    }
-
-    final assinaturaOk = validAssinatura();
-    if (assinaturaOk.isNotEmpty) {
-      return assinaturaOk;
-    }
-
-    return "";
-  }
-
-  String validAssinatura() {
-    if (!assinado) {
-      return "Realize a assinatura antes de salvar o recibo!";
-    }
-
-    return "";
   }
 }
 
@@ -238,6 +283,26 @@ class FormRecibo {
       nomeEmitente != null &&
       cpfRgCnpjEmitente != null &&
       enderecoEmitente != null
+    );
+  }
+
+  Recibo toRecibo() {
+    return Recibo(
+      id: 0,
+      numero: numero,
+      valor: valor,
+      nomePagador: nomePagador,
+      enderecoPagador: enderecoPagador,
+      valorPagador: valorPagador,
+      referente: referente,
+      cidadeUf: cidadeUf,
+      dia: dia,
+      mes: mes,
+      ano: ano,
+      nomeEmitente: nomeEmitente,
+      cpfRgCnpjEmitente: cpfRgCnpjEmitente,
+      enderecoEmitente: enderecoEmitente,
+      assinatura: assinatura
     );
   }
 }

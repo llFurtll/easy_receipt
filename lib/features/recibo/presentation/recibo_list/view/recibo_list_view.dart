@@ -1,3 +1,4 @@
+import 'package:easy_receipt/features/recibo/domain/entities/recibo.dart';
 import 'package:flutter/material.dart';
 import 'package:screen_manager/screen_view.dart';
 
@@ -11,6 +12,7 @@ class ReciboListScreen extends Screen {
   @override
   ReciboListInjection build(BuildContext context) {
     return ReciboListInjection(
+      context: context,
       child: const ScreenBridge<ReciboListController, ReciboListInjection>(
         child: ReciboListView(),
       )
@@ -72,6 +74,21 @@ class ReciboListView extends ScreenView<ReciboListController> {
       builder: (context, value, child) {
         if (value) return const Center(child: CircularProgressIndicator());
 
+        if (controller.isError) {
+          return Center(
+            child: Text(
+              controller.messageError,
+              style: const TextStyle(
+                fontWeight: FontWeight.bold,
+                color: Cores.text,
+                fontSize: 35.0
+              ),
+              textAlign: TextAlign.center,
+              maxLines: 3,
+            ),
+          );
+        }
+
         final lista = controller.recibos;
         final sizeList = lista.length;
 
@@ -91,7 +108,8 @@ class ReciboListView extends ScreenView<ReciboListController> {
         }
 
         return ListView.separated(
-          itemBuilder: (context, index) => Text("$index"),
+          padding: const EdgeInsets.all(5.0),
+          itemBuilder: (context, index) => _buildCard(lista[index]),
           separatorBuilder: (context, index) => const SizedBox(height: 15.0,),
           itemCount: sizeList
         );
@@ -105,5 +123,116 @@ class ReciboListView extends ScreenView<ReciboListController> {
       onPressed: controller.newRecibo,
       child: const Icon(Icons.add),
     );
+  }
+
+  Widget _buildCard(Recibo recibo) {
+    return Card(
+      elevation: 10,
+      child: Padding(
+        padding: const EdgeInsets.all(10.0),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                _buildTitle("Nº: ", "${recibo.numero}"),
+                _buildTitle("Valor: ", "${recibo.valor}")
+              ],
+            ),
+            _spacer(),
+            Align(
+              alignment: Alignment.center,
+              child: _buildTitle(
+                "Informações do pagador",
+                ""
+              ),
+            ),
+            _spacer(),
+            _buildTitle(
+              "Recebi(emos) de: ",
+              "${recibo.nomePagador}"
+            ),
+            _buildTitle(
+              "Endereço: " ,
+              "${recibo.enderecoPagador}"
+            ),
+            _buildTitle(
+              "A importância de: ",
+              "${recibo.valorPagador}"
+            ),
+            _spacer(),
+            Align(
+              alignment: Alignment.center,
+              child: _buildTitle(
+                "Data do recibo",
+                ""
+              ),
+            ),
+            _spacer(),
+            _buildTitle(
+              "Cidade/Estado: ",
+              "${recibo.cidadeUf}"
+            ),
+            _buildTitle(
+              "Dia: ",
+              "${recibo.dia}"
+            ),
+            _buildTitle(
+              "Mês: ",
+              "${recibo.mes}",
+            ),
+            _buildTitle(
+              "Ano: ",
+              "${recibo.ano}"
+            ),
+            _spacer(),
+            Align(
+              alignment: Alignment.center,
+              child: _buildTitle(
+                "Informações do emitente",
+                ""
+              ),
+            ),
+            _spacer(),
+            _buildTitle(
+              "Emitente: ",
+              "${recibo.nomeEmitente}"
+            ),
+            _buildTitle(
+              "CPF/RG/CNPJ: ",
+              "${recibo.cpfRgCnpjEmitente}"
+            ),
+            _buildTitle(
+              "Endereço: ",
+              "${recibo.enderecoEmitente}"
+            )
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget _buildTitle(String title, String content) {
+    return Text.rich(
+      TextSpan(
+        children: [
+          TextSpan(
+            text: title,
+            style: const TextStyle(
+              fontWeight: FontWeight.bold
+            ),
+          ),
+          TextSpan(
+            text: content
+          )
+        ]
+      ),
+      maxLines: null,
+    );
+  }
+
+  Widget _spacer() {
+    return const SizedBox(height: 5.0);
   }
 }
