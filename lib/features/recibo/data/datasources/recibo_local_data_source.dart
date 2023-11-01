@@ -5,6 +5,7 @@ import '../models/recibo_model.dart';
 abstract class ReciboLocalDataSource {
   Future<List<ReciboModel>> find();
   Future<ReciboModel> insert(ReciboModel recibo);
+  Future<void> delete(ReciboModel recibo);
 }
 
 class ReciboLocalDataSurceImpl extends ReciboLocalDataSource {
@@ -41,6 +42,20 @@ class ReciboLocalDataSurceImpl extends ReciboLocalDataSource {
       return recibo;
     } on InsertException {
       rethrow;
+    } catch (_) {
+      throw const OperationException("erro-operation");
+    }
+  }
+
+  @override
+  Future<void> delete(ReciboModel recibo) async {
+    try {
+      final db = await databaseInfo.database;
+      final result = await db.delete(table, where: "NUMERO = ?", whereArgs: [ recibo.numero ]);
+
+      if (result <= 0) {
+        throw Exception();
+      }
     } catch (_) {
       throw const OperationException("erro-operation");
     }

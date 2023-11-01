@@ -200,29 +200,29 @@ class ReciboCreateController extends ScreenController {
 
   void showMessage(String message) {
     showDialog(
-        context: context,
-        useSafeArea: true,
-        builder: (_) {
-          return AlertDialog(
-            title: const Text("Atenção", textAlign: TextAlign.center),
-            content: Text(
-              message,
-              textAlign: TextAlign.justify,
-            ),
-            contentTextStyle: const TextStyle(
-              fontSize: 18.0,
-              color: Colors.black
-            ),
-            actions: [
-              TextButton(
-                onPressed: () => Navigator.pop(context),
-                child: const Text("OK"),
-              )
-            ],
-            actionsAlignment: MainAxisAlignment.center,
-          );
-        }
-      );
+      context: context,
+      useSafeArea: true,
+      builder: (_) {
+        return AlertDialog(
+          title: const Text("Atenção", textAlign: TextAlign.center),
+          content: Text(
+            message,
+            textAlign: TextAlign.justify,
+          ),
+          contentTextStyle: const TextStyle(
+            fontSize: 18.0,
+            color: Colors.black
+          ),
+          actions: [
+            TextButton(
+              onPressed: () => Navigator.pop(context),
+              child: const Text("OK"),
+            )
+          ],
+          actionsAlignment: MainAxisAlignment.center,
+        );
+      }
+    );
   }
 }
 

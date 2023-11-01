@@ -31,4 +31,14 @@ class ReciboRepositoryImpl extends ReciboRepository {
       return (OperationFailure(message: e.message), null);
     }
   }
+
+  @override
+  Future<(Failure?, void)> delete(Recibo recibo) async {
+    try {
+      await dataSource.delete(ReciboModel.fromEntity(recibo));
+      return (null, null);
+    } on OperationException catch (e) {
+      return (OperationFailure(message: e.message), null);
+    }
+  }
 }

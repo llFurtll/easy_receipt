@@ -220,7 +220,17 @@ class ReciboListView extends ScreenView<ReciboListController> {
                     "Endereço: ",
                     "${recibo.enderecoEmitente}"
                   ),
-                  _buildAssinatura(context, recibo)
+                  Align(
+                    alignment: Alignment.center,
+                    child: Wrap(
+                      spacing: 10.0,
+                      runSpacing: 10.0,
+                      children: [
+                        _buildAssinatura(context, recibo),
+                        _buildDeletar(context, recibo),
+                      ],
+                    ),
+                  )
                 ],
               ),
             )
@@ -250,27 +260,71 @@ class ReciboListView extends ScreenView<ReciboListController> {
   }
 
   Widget _buildAssinatura(BuildContext context, Recibo recibo) {
-    return Align(
-      alignment: Alignment.center,
-      child: ElevatedButton(
-        style: ElevatedButton.styleFrom(
-          backgroundColor: Cores.primary
-        ),
-        onPressed: () => showAssinatura(context, recibo),
-        child: const Text("Ver assinatura"),
+    return ElevatedButton(
+      style: ElevatedButton.styleFrom(
+        backgroundColor: Cores.primary
       ),
+      onPressed: () => showAssinatura(context, recibo),
+      child: const Text("Ver assinatura"),
+    );
+  }
+
+  Widget _buildDeletar(BuildContext context, Recibo recibo) {
+    return ElevatedButton(
+      style: ElevatedButton.styleFrom(
+        backgroundColor: Colors.red,
+      ),
+      onPressed: () => deletarAssinatura(context, recibo),
+      child: const Text("Deletar"),
     );
   }
 
   void showAssinatura(BuildContext context, Recibo recibo) {
     showDialog(
       context: context,
-      builder: (_,) {
+      builder: (_) {
         return AlertDialog(
           content: Image.file(File(recibo.assinatura!)),
         );
       }
     );
+  }
+
+  void deletarAssinatura(BuildContext context, Recibo recibo) async {
+    final deletar = await showDialog<bool>(
+      barrierDismissible: false,
+      context: context,
+      builder: (_) {
+        return AlertDialog(
+          title: const Text("Tem certeza?"),
+          content: Text("Realmente deseja deletar o recibo número: ${recibo.numero}?"),
+          actions: [
+            ElevatedButton(
+              style: ElevatedButton.styleFrom(
+                backgroundColor: Colors.grey
+              ),
+              onPressed: () {
+                Navigator.of(context).pop(false);
+              },
+              child: const Text("Não")
+            ),
+            ElevatedButton(
+              style: ElevatedButton.styleFrom(
+                backgroundColor: Colors.red
+              ),
+              onPressed: () {
+                Navigator.of(context).pop(true);
+              },
+              child: const Text("Sim")
+            ),
+          ],
+        );
+      }
+    );
+
+    if (deletar ?? false) {
+      controller.deletarRecibo(recibo);
+    }
   }
 
   Widget _spacer() {

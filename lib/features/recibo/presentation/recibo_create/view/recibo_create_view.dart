@@ -54,7 +54,7 @@ class ReciboCreateView extends ScreenView<ReciboCreateController> {
           )
         )
       ),
-      floatingActionButton: _buildFab(),
+      floatingActionButton: controller.isEdit.value ? null : _buildFab(),
     );
   }
 
