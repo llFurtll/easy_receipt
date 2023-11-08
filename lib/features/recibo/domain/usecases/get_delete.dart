@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import '../../../core/domain/usecase.dart';
 import '../../../core/error/failures.dart';
 import '../entities/recibo.dart';
@@ -10,7 +12,15 @@ class GetDeletar extends UseCase<void, DeletarParams> {
 
   @override
   Future<(Failure?, void)> call(params) async {
-    return await reciboRepository.find();
+    final (error, _) = await reciboRepository.delete(params.recibo);
+
+    if (error == null) {
+      final assinatura = File(params.recibo.assinatura!);
+      final directoryPath = assinatura.parent;
+      directoryPath.deleteSync(recursive: true);
+    }
+
+    return (error, null);
   }
 }
 

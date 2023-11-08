@@ -23,9 +23,9 @@ class ReciboRepositoryImpl extends ReciboRepository {
   }
 
   @override
-  Future<(Failure?, List<Recibo>?)> find() async {
+  Future<(Failure?, List<Recibo>?)> find(String text) async {
     try {
-      final result = await dataSource.find();
+      final result = await dataSource.find(text);
       return (null, result);
     } on OperationException catch (e) {
       return (OperationFailure(message: e.message), null);

@@ -3,7 +3,7 @@ import '../../../core/error/exceptions.dart';
 import '../models/recibo_model.dart';
 
 abstract class ReciboLocalDataSource {
-  Future<List<ReciboModel>> find();
+  Future<List<ReciboModel>> find(String text);
   Future<ReciboModel> insert(ReciboModel recibo);
   Future<void> delete(ReciboModel recibo);
 }
@@ -15,10 +15,19 @@ class ReciboLocalDataSurceImpl extends ReciboLocalDataSource {
   ReciboLocalDataSurceImpl(this.databaseInfo);
 
   @override
-  Future<List<ReciboModel>> find() async {
+  Future<List<ReciboModel>> find(String text) async {
     try {
+      String where = "";
+      if (text.isNotEmpty) {
+        where += "NUMERO LIKE ? OR NOME_EMITENTE LIKE ? OR CPF_RG_CNPJ_EMITENTE LIKE ? OR NOME_PAGADOR LIKE ? OR REFERENTE LIKE ? OR VALOR_PAGADOR LIKE ?";
+      }
+
       final db = await databaseInfo.database;
-      final result = await db.query(table, orderBy: "NUMERO DESC");
+      final result = await db.query(
+        table, orderBy: "NUMERO DESC",
+        where: where.isNotEmpty ? where : null,
+        whereArgs: where.isNotEmpty ? ['%$text%', '%$text%', '%$text%', '%$text%', '%$text%', '%$text%'] : null
+      );
       final response = <ReciboModel>[];
       for (Map item in result) {
         response.add(ReciboModel.fromMap(item));

@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:screen_manager/screen_controller.dart';
@@ -19,6 +21,7 @@ class ReciboListController extends ScreenController {
   final recibos = <Recibo>[];
   bool isError = false;
   String messageError = "";
+  Timer? debounce;
 
   @override
   void onInit() {
@@ -29,16 +32,22 @@ class ReciboListController extends ScreenController {
     _loadLista();
   }
 
+  @override
+  void onClose() {
+    debounce?.cancel();
+    super.onClose();
+  }
+
   void _setLoading(bool isLoading) {
     this.isLoading.value = isLoading;
   }
 
-  void _loadLista() async {
+  void _loadLista({String text = ""}) async {
     recibos.clear();
 
     _setLoading(true);
 
-    final response =  await getFindRecibos(const NoParamsFind());
+    final response =  await getFindRecibos(FindRecibosParams(text: text));
     final (error, result) = response;
     if (error != null) {
       isError = true;
@@ -108,5 +117,12 @@ class ReciboListController extends ScreenController {
         );
       }
     );
+  }
+
+  void onSearch(String text) async {
+    if (debounce?.isActive ?? false) debounce?.cancel();
+    debounce = Timer(const Duration(milliseconds: 500), () {
+      _loadLista(text: text);
+    });
   }
 }

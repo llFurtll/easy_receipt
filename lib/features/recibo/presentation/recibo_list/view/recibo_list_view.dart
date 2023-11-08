@@ -109,13 +109,56 @@ class ReciboListView extends ScreenView<ReciboListController> {
           );
         }
 
-        return ListView.separated(
-          padding: const EdgeInsets.all(5.0),
-          itemBuilder: (context, index) => _buildCard(lista[index], context),
-          separatorBuilder: (context, index) => const SizedBox(height: 15.0,),
-          itemCount: sizeList
+        return GestureDetector(
+          onTap: () => FocusScope.of(context).unfocus(),
+          child: Column(
+            children: [
+              _buildSearch(),
+              Expanded(
+                child: ListView.separated(
+                  padding: const EdgeInsets.all(5.0),
+                  itemBuilder: (context, index) => _buildCard(lista[index], context),
+                  separatorBuilder: (context, index) => const SizedBox(height: 15.0,),
+                  itemCount: sizeList
+                ),
+              )
+            ],
+          ),
         );
       },
+    );
+  }
+
+  Widget _buildSearch() {
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 10.0, vertical: 15.0),
+      child: TextField(
+        onChanged: controller.onSearch,
+        decoration: InputDecoration(
+          border: const OutlineInputBorder(),
+          prefixIconColor: MaterialStateColor.resolveWith((states) {
+            return states.contains(MaterialState.focused) ? Cores.primary : Cores.text;
+          }),
+          suffixIconColor: MaterialStateColor.resolveWith((states) {
+            return states.contains(MaterialState.focused) ? Cores.primary : Cores.text;
+          }),
+          focusedBorder: const OutlineInputBorder(
+            borderSide: BorderSide(
+              color: Cores.primary
+            )
+          ),
+          suffixIcon: const Icon(Icons.search),
+          hintText: "Pesquisar",
+          prefixIcon: const Tooltip(
+              message: "Campos do recibo para pesquisa: N°, Emitente, CPF/RG/CNPJ, Referente, Recebi(emos), A importância de",
+              triggerMode: TooltipTriggerMode.tap,
+              showDuration: Duration(seconds: 5),
+              padding: EdgeInsets.all(5.0),
+              margin: EdgeInsets.symmetric(horizontal: 20.0),
+              child: Icon(Icons.info),
+          )
+        ),
+      ),
     );
   }
 
