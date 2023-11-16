@@ -77,17 +77,24 @@ class ReciboListView extends ScreenView<ReciboListController> {
         if (value) return const Center(child: CircularProgressIndicator());
 
         if (controller.isError) {
-          return Center(
-            child: Text(
-              controller.messageError,
-              style: const TextStyle(
-                fontWeight: FontWeight.bold,
-                color: Cores.text,
-                fontSize: 35.0
-              ),
-              textAlign: TextAlign.center,
-              maxLines: 3,
-            ),
+          return Column(
+            children: [
+              _buildSearch(),
+              Expanded(
+                child: Center(
+                  child: Text(
+                    controller.messageError,
+                    style: const TextStyle(
+                      fontWeight: FontWeight.bold,
+                      color: Cores.text,
+                      fontSize: 35.0
+                    ),
+                    textAlign: TextAlign.center,
+                    maxLines: null
+                  ),
+                ),
+              )
+            ],
           );
         }
 
@@ -95,17 +102,26 @@ class ReciboListView extends ScreenView<ReciboListController> {
         final sizeList = lista.length;
 
         if (sizeList == 0) {
-          return const Center(
-            child: Text(
-              "Você não possuí nenhum recibo!",
-              style: TextStyle(
-                fontWeight: FontWeight.bold,
-                color: Cores.text,
-                fontSize: 35.0
-              ),
-              textAlign: TextAlign.center,
-              maxLines: 3,
-            ),
+          return Column(
+            children: [
+              _buildSearch(),
+              Expanded(
+                child: Center(
+                  child: Text(
+                      controller.isSearch ?
+                        "Nenhum recibo encontrado para a pesquisa." :
+                        "Você não possuí nenhum recibo!",
+                      style: const TextStyle(
+                        fontWeight: FontWeight.bold,
+                        color: Cores.text,
+                        fontSize: 35.0
+                      ),
+                      textAlign: TextAlign.center,
+                      maxLines: null
+                  ),
+                ),
+              )
+            ],
           );
         }
 
@@ -123,7 +139,7 @@ class ReciboListView extends ScreenView<ReciboListController> {
                 ),
               )
             ],
-          ),
+          )
         );
       },
     );
@@ -133,6 +149,7 @@ class ReciboListView extends ScreenView<ReciboListController> {
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 10.0, vertical: 15.0),
       child: TextField(
+        controller: controller.searchController,
         onChanged: controller.onSearch,
         decoration: InputDecoration(
           border: const OutlineInputBorder(),

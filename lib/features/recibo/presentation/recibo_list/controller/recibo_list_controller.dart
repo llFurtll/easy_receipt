@@ -19,7 +19,9 @@ class ReciboListController extends ScreenController {
 
   // VARIÁVEIS
   final recibos = <Recibo>[];
+  final searchController = TextEditingController();
   bool isError = false;
+  bool isSearch = false;
   String messageError = "";
   Timer? debounce;
 
@@ -44,6 +46,9 @@ class ReciboListController extends ScreenController {
 
   void _loadLista({String text = ""}) async {
     recibos.clear();
+    isSearch = text.isNotEmpty;
+    isError = false;
+    messageError = "";
 
     _setLoading(true);
 

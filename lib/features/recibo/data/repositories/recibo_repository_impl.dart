@@ -15,10 +15,10 @@ class ReciboRepositoryImpl extends ReciboRepository {
     try {
       final result = await dataSource.insert(ReciboModel.fromEntity(recibo));
       return (null, result);
-    } on InsertException catch (e) {
-      return (InsertFailure(message: e.message), null);
-    } on OperationException catch (e) {
-      return (OperationFailure(message: e.message), null);
+    } on InsertException catch (_) {
+      return (InsertFailure(message: "Não foi possível inserir o recibo, por favor tente novamente!"), null);
+    } on OperationException catch (_) {
+      return (OperationFailure(message: "Falha na operação, por favor tente novamente!"), null);
     }
   }
 
@@ -27,8 +27,8 @@ class ReciboRepositoryImpl extends ReciboRepository {
     try {
       final result = await dataSource.find(text);
       return (null, result);
-    } on OperationException catch (e) {
-      return (OperationFailure(message: e.message), null);
+    } on OperationException catch (_) {
+      return (OperationFailure(message: "Falha na operação, por favor tente novamente!"), null);
     }
   }
 
@@ -37,8 +37,8 @@ class ReciboRepositoryImpl extends ReciboRepository {
     try {
       await dataSource.delete(ReciboModel.fromEntity(recibo));
       return (null, null);
-    } on OperationException catch (e) {
-      return (OperationFailure(message: e.message), null);
+    } on OperationException catch (_) {
+      return (OperationFailure(message: "Falha na operação, por favor tente novamente!"), null);
     }
   }
 }
