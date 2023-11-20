@@ -16,7 +16,8 @@ class ReciboModel extends Recibo {
     required super.nomeEmitente,
     required super.cpfRgCnpjEmitente,
     required super.enderecoEmitente,
-    required super.assinatura
+    required super.assinatura,
+    required super.compartilhar
   });
 
   factory ReciboModel.fromMap(Map item) {
@@ -35,7 +36,8 @@ class ReciboModel extends Recibo {
       nomeEmitente: item['NOME_EMITENTE'],
       cpfRgCnpjEmitente: item['CPF_RG_CNPJ_EMITENTE'],
       enderecoEmitente: item['ENDERECO_EMITENTE'],
-      assinatura: item['ASSINATURA']
+      assinatura: item['ASSINATURA'],
+      compartilhar: item['COMPARTILHAR']
     );
   }
 
@@ -55,7 +57,8 @@ class ReciboModel extends Recibo {
       nomeEmitente: recibo.nomeEmitente,
       cpfRgCnpjEmitente: recibo.cpfRgCnpjEmitente,
       enderecoEmitente: recibo.enderecoEmitente,
-      assinatura: recibo.assinatura
+      assinatura: recibo.assinatura,
+      compartilhar: recibo.compartilhar
     );
   }
 
@@ -74,7 +77,8 @@ class ReciboModel extends Recibo {
       "NOME_EMITENTE": nomeEmitente,
       "CPF_RG_CNPJ_EMITENTE": cpfRgCnpjEmitente,
       "ENDERECO_EMITENTE": enderecoEmitente,
-      "ASSINATURA": assinatura
+      "ASSINATURA": assinatura,
+      "COMPARTILHAR": compartilhar
     };
   }
 }

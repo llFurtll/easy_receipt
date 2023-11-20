@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:screen_manager/screen_controller.dart';
 import 'package:screen_manager/screen_injection.dart';
+import 'package:share_plus/share_plus.dart';
 
 import '../../../domain/entities/recibo.dart';
 import '../../../domain/usecases/get_delete.dart';
@@ -129,5 +130,9 @@ class ReciboListController extends ScreenController {
     debounce = Timer(const Duration(milliseconds: 500), () {
       _loadLista(text: text);
     });
+  }
+
+  void share(Recibo recibo) async {
+    await Share.shareXFiles([XFile(recibo.compartilhar!)], text: "Compartilhando o recibo número: ${recibo.numero}");
   }
 }

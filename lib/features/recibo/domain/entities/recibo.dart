@@ -14,6 +14,7 @@ class Recibo {
   final String? cpfRgCnpjEmitente;
   final String? enderecoEmitente;
   final String? assinatura;
+  final String? compartilhar;
 
   Recibo({
     required this.id,
@@ -30,6 +31,7 @@ class Recibo {
     required this.nomeEmitente,
     required this.cpfRgCnpjEmitente,
     required this.enderecoEmitente,
-    required this.assinatura
+    required this.assinatura,
+    required this.compartilhar
   });
 }

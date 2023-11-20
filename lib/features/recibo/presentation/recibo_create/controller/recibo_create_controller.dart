@@ -2,6 +2,7 @@ import 'dart:io';
 import 'dart:ui' as ui;
 
 import 'package:flutter/material.dart';
+import 'package:flutter/rendering.dart';
 import 'package:flutter/services.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:screen_manager/screen_controller.dart';
@@ -21,6 +22,7 @@ class ReciboCreateController extends ScreenController {
   // KEYS
   final keyPad = GlobalKey<SfSignaturePadState>();
   final keyForm = GlobalKey<FormState>();
+  final keyBoundary = GlobalKey();
 
   // NOTIFIERS
   final assinatura = ValueNotifier<Uint8List?>(null);
@@ -136,15 +138,17 @@ class ReciboCreateController extends ScreenController {
       return;
     }
 
-    final image = await saveAssinatura();
-    final (success, path) = image;
+    final image = await saveAssinaturaAndImage();
+    final (success, paths) = image;
 
     if (!success) {
       showMessage("Não foi possível salvar a imagem da assinatura, por favor tente novamente!");
       return;
     }
 
-    formRecibo.assinatura = path;
+    final (pathAssinatura, pathShare) = paths;
+    formRecibo.assinatura = pathAssinatura;
+    formRecibo.compartilhar = pathShare;
 
     final result = await getInsertRecibo(InsertReciboParams(recibo: formRecibo.toRecibo()));
     final (error, _) = result;
@@ -180,7 +184,7 @@ class ReciboCreateController extends ScreenController {
     return "";
   }
 
-  Future<(bool, String)> saveAssinatura() async {
+  Future<(bool, (String, String))> saveAssinaturaAndImage() async {
     try {
       const nameFile = "assinatura.png";
       final pathDocuments = await getApplicationDocumentsDirectory();
@@ -189,12 +193,26 @@ class ReciboCreateController extends ScreenController {
       File file = File("${pathDocuments.path}/$nameFolder/$nameFile");
       file.createSync(recursive: true);
       if (assinatura.value != null) {
-        file.writeAsBytes(assinatura.value!);
+        file.writeAsBytesSync(assinatura.value!);
       }
 
-      return (true, file.path);
+      const nameShare = "image.png";
+      File shareFile = File("${pathDocuments.path}/$nameFolder/$nameShare");
+      file.createSync();
+      final boundary = keyBoundary.currentContext?.findRenderObject() as RenderRepaintBoundary;
+      final image = await boundary.toImage();
+      final byteData = await image.toByteData(format: ui.ImageByteFormat.png);
+      final imageBytes = byteData?.buffer.asUint8List();
+
+      if (imageBytes == null) {
+        throw Exception();
+      }
+
+      shareFile.writeAsBytesSync(imageBytes);
+
+      return (true, (file.path, shareFile.path));
     } catch (e) {
-      return (false, "");
+      return (false, ("", ""));
     }
   }
 
@@ -241,6 +259,7 @@ class FormRecibo {
   String? cpfRgCnpjEmitente;
   String? enderecoEmitente;
   String? assinatura;
+  String? compartilhar;
 
   FormRecibo({
     this.numero,
@@ -256,7 +275,8 @@ class FormRecibo {
     this.nomeEmitente,
     this.cpfRgCnpjEmitente,
     this.enderecoEmitente,
-    this.assinatura
+    this.assinatura,
+    this.compartilhar
   });
 
   factory FormRecibo.fromEntity(Recibo recibo) {
@@ -274,7 +294,8 @@ class FormRecibo {
       nomeEmitente: recibo.nomeEmitente,
       cpfRgCnpjEmitente: recibo.cpfRgCnpjEmitente,
       enderecoEmitente: recibo.enderecoEmitente,
-      assinatura: recibo.assinatura
+      assinatura: recibo.assinatura,
+      compartilhar: recibo.compartilhar
     );
   }
 
@@ -312,7 +333,8 @@ class FormRecibo {
       nomeEmitente: nomeEmitente,
       cpfRgCnpjEmitente: cpfRgCnpjEmitente,
       enderecoEmitente: enderecoEmitente,
-      assinatura: assinatura
+      assinatura: assinatura,
+      compartilhar: compartilhar
     );
   }
 }

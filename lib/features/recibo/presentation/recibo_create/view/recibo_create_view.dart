@@ -25,34 +25,39 @@ class ReciboCreateView extends ScreenView<ReciboCreateController> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Cores.scaffold,
       extendBodyBehindAppBar: true,
       body: SafeArea(
         child: SingleChildScrollView(
           padding: const EdgeInsets.all(15.0),
-          child: Form(
-            key: controller.keyForm,
-              child: ValueListenableBuilder(
-                valueListenable: controller.isEdit,
-                builder: (_, __, ___) {
-                  return Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      _primeiraSecao(context),
-                      const SizedBox(height: 5.0),
-                      _segundaSecao(),
-                      const SizedBox(height: 10.0),
-                      _terceiraSecao(),
-                      const SizedBox(height: 5.0),
-                      _quartaSecao(),
-                      const SizedBox(height: 10.0),
-                      _quintaSecao(context)
-                    ],
-                  );
-                },
-              )
-          )
-        )
+          child: RepaintBoundary(
+            key: controller.keyBoundary,
+            child: Container(
+              color: Cores.scaffold,
+              child: Form(
+                key: controller.keyForm,
+                child: ValueListenableBuilder(
+                  valueListenable: controller.isEdit,
+                  builder: (_, __, ___) {
+                    return Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        _primeiraSecao(context),
+                        const SizedBox(height: 5.0),
+                        _segundaSecao(),
+                        const SizedBox(height: 10.0),
+                        _terceiraSecao(),
+                        const SizedBox(height: 5.0),
+                        _quartaSecao(),
+                        const SizedBox(height: 10.0),
+                        _quintaSecao(context)
+                      ],
+                    );
+                  },
+                )
+              ),
+            ),
+          ),
+        ),
       ),
       floatingActionButton: controller.isEdit.value ? null : _buildFab(),
     );

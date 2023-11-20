@@ -19,7 +19,8 @@ Future<void> create(Database database) async {
       "NOME_EMITENTE": "TEXT NOT NULL,",
       "CPF_RG_CNPJ_EMITENTE": "TEXT NOT NULL,",
       "ENDERECO_EMITENTE": "TEXT NOT NULL,",
-      "ASSINATURA": "TEXT NOT NULL)",
+      "ASSINATURA": "TEXT NOT NULL,",
+      "COMPARTILHAR": "TEXT NOT NULL)",
     }
   );
 }

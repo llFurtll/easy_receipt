@@ -104,7 +104,7 @@ class ReciboListView extends ScreenView<ReciboListController> {
         if (sizeList == 0) {
           return Column(
             children: [
-              _buildSearch(),
+              controller.isSearch ? _buildSearch() : const SizedBox.shrink(),
               Expanded(
                 child: Center(
                   child: Text(
@@ -283,10 +283,11 @@ class ReciboListView extends ScreenView<ReciboListController> {
                   Align(
                     alignment: Alignment.center,
                     child: Wrap(
+                      alignment: WrapAlignment.center,
                       spacing: 10.0,
-                      runSpacing: 10.0,
                       children: [
                         _buildAssinatura(context, recibo),
+                        _buildShare(context, recibo),
                         _buildDeletar(context, recibo),
                       ],
                     ),
@@ -326,6 +327,16 @@ class ReciboListView extends ScreenView<ReciboListController> {
       ),
       onPressed: () => showAssinatura(context, recibo),
       child: const Text("Ver assinatura"),
+    );
+  }
+
+  Widget _buildShare(BuildContext context, Recibo recibo) {
+    return ElevatedButton(
+      style: ElevatedButton.styleFrom(
+        backgroundColor: Colors.blueAccent
+      ),
+      onPressed: () => controller.share(recibo),
+      child: const Text("Compartilhar"),
     );
   }
 
