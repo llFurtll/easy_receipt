@@ -25,6 +25,7 @@ class ReciboCreateView extends ScreenView<ReciboCreateController> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: Cores.scaffold,
       extendBodyBehindAppBar: true,
       body: SafeArea(
         child: SingleChildScrollView(
@@ -367,6 +368,7 @@ class ReciboCreateView extends ScreenView<ReciboCreateController> {
   Widget _buildFab() {
     return FloatingActionButton(
       backgroundColor: Cores.fab,
+      foregroundColor: Colors.white,
       onPressed: controller.salvar,
       child: const Icon(Icons.save),
     );

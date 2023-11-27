@@ -182,6 +182,7 @@ class ReciboListView extends ScreenView<ReciboListController> {
   Widget _buildFab() {
     return FloatingActionButton(
       backgroundColor: Cores.fab,
+      foregroundColor: Colors.white,
       onPressed: controller.newRecibo,
       child: const Icon(Icons.add),
     );
@@ -323,7 +324,8 @@ class ReciboListView extends ScreenView<ReciboListController> {
   Widget _buildAssinatura(BuildContext context, Recibo recibo) {
     return ElevatedButton(
       style: ElevatedButton.styleFrom(
-        backgroundColor: Cores.primary
+        backgroundColor: Cores.primary,
+        foregroundColor: Colors.white
       ),
       onPressed: () => showAssinatura(context, recibo),
       child: const Text("Ver assinatura"),
@@ -333,7 +335,8 @@ class ReciboListView extends ScreenView<ReciboListController> {
   Widget _buildShare(BuildContext context, Recibo recibo) {
     return ElevatedButton(
       style: ElevatedButton.styleFrom(
-        backgroundColor: Colors.blueAccent
+        backgroundColor: Colors.blueAccent,
+        foregroundColor: Colors.white
       ),
       onPressed: () => controller.share(recibo),
       child: const Text("Compartilhar"),
@@ -344,6 +347,7 @@ class ReciboListView extends ScreenView<ReciboListController> {
     return ElevatedButton(
       style: ElevatedButton.styleFrom(
         backgroundColor: Colors.red,
+        foregroundColor: Colors.white
       ),
       onPressed: () => deletarAssinatura(context, recibo),
       child: const Text("Deletar"),
