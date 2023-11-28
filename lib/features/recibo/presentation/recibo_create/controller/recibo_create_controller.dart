@@ -95,7 +95,8 @@ class ReciboCreateController extends ScreenController {
             children: [
               ElevatedButton(
                 style: ElevatedButton.styleFrom(
-                  backgroundColor: Cores.primary
+                  backgroundColor: Cores.primary,
+                  foregroundColor: Colors.white
                 ),
                 onPressed: () {
                   _generateAssinatura()
@@ -106,7 +107,8 @@ class ReciboCreateController extends ScreenController {
               const SizedBox(width: 10.0),
               ElevatedButton(
                 style: ElevatedButton.styleFrom(
-                  backgroundColor: Cores.primary
+                  backgroundColor: Cores.primary,
+                  foregroundColor: Colors.white
                 ),
                 onPressed: () {
                   keyPad.currentState!.clear();
@@ -117,7 +119,8 @@ class ReciboCreateController extends ScreenController {
               const SizedBox(width: 10.0),
               ElevatedButton(
                 style: ElevatedButton.styleFrom(
-                  backgroundColor: Colors.red
+                  backgroundColor: Colors.red,
+                  foregroundColor: Colors.white
                 ),
                 onPressed: () {
                   Navigator.of(innerContext).pop();

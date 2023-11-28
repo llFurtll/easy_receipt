@@ -1,10 +1,10 @@
 import 'dart:io';
 
-import 'package:easy_receipt/features/recibo/domain/entities/recibo.dart';
 import 'package:flutter/material.dart';
 import 'package:screen_manager/screen_view.dart';
 
 import '../../../../core/ui/cores.dart';
+import '../../../domain/entities/recibo.dart';
 import '../controller/recibo_list_controller.dart';
 import '../injection/recibo_list_injection.dart';
 
@@ -53,7 +53,7 @@ class ReciboListView extends ScreenView<ReciboListController> {
       flexibleSpace: const Align(
         alignment: Alignment.bottomRight,
         child: Padding(
-          padding: EdgeInsets.only(right: 25.0),
+          padding: EdgeInsets.only(right: 40.0),
           child: Icon(
             Icons.receipt_long_outlined,
             size: 120.0,
@@ -67,6 +67,16 @@ class ReciboListView extends ScreenView<ReciboListController> {
           bottomRight: Radius.circular(15.0)
         )
       ),
+      actions: [
+        Align(
+          alignment: Alignment.topRight,
+          child: IconButton(
+            onPressed: () => Navigator.of(context).pushNamed("/sobre"),
+            icon: const Icon(Icons.info_outline),
+            color: Colors.white
+          ),
+        )
+      ],
     );
   }
 
